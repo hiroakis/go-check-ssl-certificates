@@ -9,7 +9,7 @@ test:
 	go test -v
 
 build: deps test
-	GOARCH=386 go build -ldflags="-s -w"
+	GOARCH=386 go build -ldflags="-s -w" -o go-check-ssl-certificates cmd/*.go
 
 clean:
 	rm -rf go-check-ssl-certificates

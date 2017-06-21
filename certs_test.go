@@ -1,4 +1,4 @@
-package main
+package certs
 
 import (
 	"strings"
@@ -9,14 +9,14 @@ import (
 )
 
 func TestParseRemoteCertificate(t *testing.T) {
-	cert, err := parseRemoteCertificate("google.com:443")
+	cert, err := ParseRemoteCertificate("google.com:443")
 
 	assert.Nil(t, err)
 	assert.Equal(t, true, strings.Contains(cert.CommonName, "google.com"), "should be true")
 }
 
 func TestParseCertificateFile(t *testing.T) {
-	cert, err := parseCertificateFile("./test_certificates/my-server.crt")
+	cert, err := ParseCertificateFile("./test_certificates/my-server.crt")
 
 	expectedNotAfter, _ := time.Parse("2006-01-02 15:04:05 -0700 MST", "2117-05-28 07:14:47 +0000 UTC")
 	expectedNotBefore, _ := time.Parse("2006-01-02 15:04:05 -0700 MST", "2017-06-21 07:14:47 +0000 UTC")

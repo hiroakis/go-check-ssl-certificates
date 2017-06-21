@@ -1,12 +1,10 @@
-package main
+package certs
 
 import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
-	"flag"
-	"fmt"
 	"io/ioutil"
 	"time"
 )
@@ -33,7 +31,7 @@ func getVerifiedCertificateChains(addr string) ([][]*x509.Certificate, error) {
 	return chains, nil
 }
 
-func parseRemoteCertificate(addr string) (*Cert, error) {
+func ParseRemoteCertificate(addr string) (*Cert, error) {
 	chains, err := getVerifiedCertificateChains(addr)
 	if err != nil {
 		return nil, err
@@ -59,7 +57,7 @@ func parseRemoteCertificate(addr string) (*Cert, error) {
 	return cert, err
 }
 
-func parseCertificateFile(certFile string) (*Cert, error) {
+func ParseCertificateFile(certFile string) (*Cert, error) {
 	b, err := ioutil.ReadFile(certFile)
 	if err != nil {
 		return nil, err
@@ -81,43 +79,7 @@ func parseCertificateFile(certFile string) (*Cert, error) {
 	}, err
 }
 
-func jsonify(cert *Cert) string {
+func (cert *Cert) Jsonify() string {
 	b, _ := json.Marshal(cert)
 	return string(b)
-}
-
-func main() {
-
-	var (
-		certFile string
-		addr     string
-	)
-	flag.StringVar(&certFile, "file", "", "The certificates.")
-	flag.StringVar(&addr, "connect", "", "The remote addr. The format should be 'example.com:ssl_port'.")
-	flag.Parse()
-
-	var (
-		cert *Cert
-		err  error
-	)
-
-	if addr != "" {
-		cert, err = parseRemoteCertificate(addr)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-	} else if certFile != "" {
-		cert, err = parseCertificateFile(certFile)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-	} else {
-		fmt.Println("Usage:")
-		flag.PrintDefaults()
-		return
-	}
-
-	fmt.Println(jsonify(cert))
 }
