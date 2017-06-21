@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"io/ioutil"
+	"net"
 	"time"
 )
 
@@ -20,8 +21,8 @@ type Cert struct {
 	ExpireAfter        float64   `json:"expiration"`
 }
 
-func getVerifiedCertificateChains(addr string) ([][]*x509.Certificate, error) {
-	conn, err := tls.Dial("tcp", addr, nil)
+func getVerifiedCertificateChains(addr string, timeoutSecond time.Duration) ([][]*x509.Certificate, error) {
+	conn, err := tls.DialWithDialer(&net.Dialer{Timeout: timeoutSecond * time.Second}, "tcp", addr, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -31,8 +32,8 @@ func getVerifiedCertificateChains(addr string) ([][]*x509.Certificate, error) {
 	return chains, nil
 }
 
-func ParseRemoteCertificate(addr string) (*Cert, error) {
-	chains, err := getVerifiedCertificateChains(addr)
+func ParseRemoteCertificate(addr string, timeoutSecond int) (*Cert, error) {
+	chains, err := getVerifiedCertificateChains(addr, time.Duration(timeoutSecond))
 	if err != nil {
 		return nil, err
 	}

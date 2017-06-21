@@ -15,6 +15,8 @@ make
         The remote addr. The format should be 'example.com:ssl_port'.
   -file string
         The certificates.
+  -timeout int
+        The timeout in sec. (default 10)
 ```
 
 * Check the website

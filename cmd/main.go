@@ -10,11 +10,13 @@ import (
 func main() {
 
 	var (
-		certFile string
-		addr     string
+		certFile      string
+		addr          string
+		timeoutSecond int
 	)
 	flag.StringVar(&certFile, "file", "", "The certificates.")
 	flag.StringVar(&addr, "connect", "", "The remote addr. The format should be 'example.com:ssl_port'.")
+	flag.IntVar(&timeoutSecond, "timeout", 10, "The timeout in sec.")
 	flag.Parse()
 
 	var (
@@ -23,7 +25,7 @@ func main() {
 	)
 
 	if addr != "" {
-		c, err = certs.ParseRemoteCertificate(addr)
+		c, err = certs.ParseRemoteCertificate(addr, timeoutSecond)
 		if err != nil {
 			fmt.Println(err)
 			return
